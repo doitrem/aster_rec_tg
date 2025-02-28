@@ -1,0 +1,26 @@
+#!/usr/bin/env python
+
+import os
+import requests
+import sys
+
+recording_file = sys.argv[1] 
+chat_id = 'YOUR_CHAT_ID' 
+bot_token = 'YOUR_BOT_TOKEN' 
+
+def send_telegram_message(chat_id, bot_token, recording_file):
+    url = f'https://api.telegram.org/bot{bot_token}/sendVoice'
+    with open(recording_file, 'rb') as voice:
+        files = {'voice': voice}
+        data = {'chat_id': chat_id}
+        response = requests.post(url, files=files, data=data)
+        return response
+
+response = send_telegram_message(chat_id, bot_token, recording_file)
+
+if response.status_code == 200:
+    print("Запись успешно отправлена в Telegram.")
+else:
+    print("Ошибка при отправке записи:", response.text)
+
+os.remove(recording_file)
